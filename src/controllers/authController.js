@@ -1,5 +1,5 @@
 const { userService } = require('../services');
-const responseFormatter = require('../utils/responseFormatter');
+const responseFormatter = require('../../utils/responseFormatter');
 
 const authenticateUser = async (req, res) => {
   try {

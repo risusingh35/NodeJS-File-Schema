@@ -1,5 +1,5 @@
 const { userService } = require('../services');
-const { responseFormatter,logger  } = require('../utils');
+const { responseFormatter,logger  } = require('../../utils');
 
 exports.createUser = async (req, res) => {
   try {

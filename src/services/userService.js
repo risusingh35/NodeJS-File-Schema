@@ -1,12 +1,13 @@
-const User = require('../models/userModel');
+const { User } = require('../../models/index');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const config = require('../config');
+const config = require('../../config');
 
 const saltRounds = config.auth.saltRounds;
 const jwtSecret = config.auth.jwtSecret;
 const jwtExpiration = config.auth.jwtExpiration;
-
+const refreshJwtSecret = config.auth.refreshJwtSecret;
+const refreshJwtExpiration=config.auth.refreshJwtExpiration
 const createUser = async (userData) => {
   try {
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
@@ -14,7 +15,7 @@ const createUser = async (userData) => {
       ...userData,
       password: hashedPassword,
     });
-    await newUser.save(); 
+    await newUser.save();
     return newUser;
   } catch (error) {
     throw new Error('Error creating user: ' + error.message);
@@ -42,17 +43,20 @@ const getUserById = async (id) => {
 
 const updateUser = async (id, updateData) => {
   try {
-    const user = await User.findByIdAndUpdate(id, updateData, { new: true });
+    const user = await User.updateOne({_id:id}, updateData);
+    
     if (!user) throw new Error('User not found');
     return user;
   } catch (error) {
+    console.error('Error updating user:', error.message); // Log the error
     throw new Error('Error updating user: ' + error.message);
   }
 };
 
+
 const deleteUser = async (id) => {
   try {
-    const user = await User.findByIdAndDelete(id);
+    const user = await User.deleteOne({_id:id});
     if (!user) throw new Error('User not found');
     return user;
   } catch (error) {
@@ -66,8 +70,8 @@ const authenticateUser = async (email, password) => {
     throw new Error('Invalid credentials');
   }
 
-  const token = jwt.sign({ id: user._id }, config.auth.jwtSecret, { expiresIn: config.auth.jwtExpiration });
-  const refreshToken = jwt.sign({ id: user._id }, config.auth.refreshJwtSecret, { expiresIn: config.auth.refreshJwtExpiration });
+  const token = jwt.sign({ id: user._id },jwtSecret, { expiresIn: jwtExpiration });
+  const refreshToken = jwt.sign({ id: user._id }, refreshJwtSecret, { expiresIn: refreshJwtExpiration});
 
   const userResponse = {
     _id: user._id,
@@ -79,8 +83,8 @@ const authenticateUser = async (email, password) => {
 };
 const refreshToken = (refreshToken) => {
   try {
-    const decoded = jwt.verify(refreshToken, config.auth.refreshJwtSecret);
-    const token = jwt.sign({ id: decoded.id }, config.auth.jwtSecret, { expiresIn: config.auth.jwtExpiration });
+    const decoded = jwt.verify(refreshToken, refreshJwtSecret);
+    const token = jwt.sign({ id: decoded.id }, jwtSecret, { expiresIn: jwtExpiration });
     return token;
   } catch (error) {
     throw new Error('Invalid refresh token');
