@@ -1,5 +1,10 @@
-const config = require('./config');
-
+const authConfig = require('./authConfig');
+const loggerConfig = require('./loggerConfig');
+const database = require('./database');
+const serverConfig = require('./serverConfig');
 module.exports = {
-  ...config,
+  server: serverConfig,
+  database:database,
+  logger:loggerConfig,
+  auth: authConfig,
 };

@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
-const config = require('../../config/config');
+const {auth} = require('../../config/index');
 
 const verifyToken = (token) => {
-  return jwt.verify(token, config.auth.jwtSecret);
+  return jwt.verify(token, auth.jwtSecret);
 };
 
 module.exports = {

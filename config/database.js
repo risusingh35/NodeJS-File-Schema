@@ -1,4 +1,7 @@
 module.exports = {
-    uri: process.env.DB_URI || 'mongodb://localhost:27017/myapp'
-  };
-  
+  mongoDB: {
+    uri: process.env.MONGODB_URI || ''
+  },
+  sql: {},
+  pg: {}
+};

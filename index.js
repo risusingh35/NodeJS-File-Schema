@@ -1,14 +1,12 @@
 // index.js
-const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const config = require('./config');
-const startApp = require('./src/app');
-
 dotenv.config();
-
+const mongoose = require('mongoose');
+const {database,server} = require('./config/index');
+const startApp = require('./src/app');
 const startServer = async () => {
   try {
-    await mongoose.connect(config.database.url, { 
+    await mongoose.connect(database.mongoDB.uri, { 
       useNewUrlParser: true, 
       useUnifiedTopology: true,
       useCreateIndex: true,
@@ -16,8 +14,8 @@ const startServer = async () => {
     console.log('Database connected');
     
     const app = startApp();
-    app.listen(config.server.port, () => {
-      console.log(`Server running on port ${config.server.port}`);
+    app.listen(server.PORT, () => {
+      console.log(`Server running on port ${server.PORT}`);
     });
   } catch (error) {
     console.error('Error connecting to database', error);

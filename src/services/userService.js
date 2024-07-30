@@ -1,13 +1,13 @@
 const { User } = require('../../models/index');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const config = require('../../config');
+const {auth} = require('../../config/index');
 
-const saltRounds = config.auth.saltRounds;
-const jwtSecret = config.auth.jwtSecret;
-const jwtExpiration = config.auth.jwtExpiration;
-const refreshJwtSecret = config.auth.refreshJwtSecret;
-const refreshJwtExpiration=config.auth.refreshJwtExpiration
+const saltRounds = auth.saltRounds;
+const jwtSecret = auth.jwtSecret;
+const jwtExpiration = auth.jwtExpiration;
+const refreshJwtSecret = auth.refreshJwtSecret;
+const refreshJwtExpiration=auth.refreshJwtExpiration
 const createUser = async (userData) => {
   try {
     const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
